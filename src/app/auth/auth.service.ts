@@ -8,6 +8,8 @@ import {
 } from "../../utils/token";
 import config from "./../../config/config";
 
+
+
 export const login = async (identifier: string, password: string) => {
   const user = await User.findOne({ email: identifier, is_deleted: false });
 
