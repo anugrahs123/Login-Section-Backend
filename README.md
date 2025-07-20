@@ -18,8 +18,8 @@ This project implements a secure login system using the MERN stack (MongoDB, Exp
 
 ### 1. Clone the repository
 
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/anugrahs123/Login-Section-Backend.git
+cd Login-Section-Backend
 
 ### 2. Install dependencies
 
@@ -81,4 +81,4 @@ Use **Postman** or **frontend app** to test:
 3. Refresh token when access token expires
 4. Logout and attempt reuse of tokens (should fail)
 
----
+## Note: For instant testing, you can adjust the token expiry duration by modifying the expiresIn value in the src/utils/token.ts file.
