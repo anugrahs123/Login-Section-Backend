@@ -6,6 +6,7 @@ const router = Router();
 
 router.post("/login", authController.login);
 router.post("/refresh-token", authController.refresh);
+//protected-route
 router.post("/logout", verifyJwt, authController.logout);
 router.get("/user", verifyJwt, authController.userDetails);
 

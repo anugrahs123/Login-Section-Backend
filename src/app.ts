@@ -11,10 +11,11 @@ app.use(bodyParser.json());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    methods: "GET,PUT,PATCH,POST,DELETE",
   })
 );
 
+//mongoDB connection
 mongoose
   .connect(config.MONGO_URI)
   .then(() => {
@@ -26,15 +27,12 @@ mongoose
   });
 
 app.use(express.json());
-
 app.use("/v1", router);
-
 app.use((req, res, next) => {
   next(new ApiError(404, "Not found"));
 });
 
 app.use(errorConverter);
-
 app.use(errorHandler);
 
 export default app;

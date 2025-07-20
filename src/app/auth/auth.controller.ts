@@ -19,6 +19,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+//refresh-token
 export const refresh = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
@@ -29,12 +30,15 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json(tokens);
 });
 
+//logout
 export const logout = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
-  const userId = req.body.userId;
+  const userId = req.userId;
   await authService.logout(userId, refreshToken);
   res.status(204).send();
 });
+
+//user-details
 export const userDetails = catchAsync(async (req: Request, res: Response) => {
   const userId = req.userId;
   const user = await authService.userDetails(userId);

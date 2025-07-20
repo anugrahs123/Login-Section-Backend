@@ -28,7 +28,7 @@ const refreshTokenSchema: Schema<IRefreshToken> = new Schema({
     type: Date,
     default: Date.now,
   },
-  revoked: Date,
+  revoked: Boolean,
 });
 
 // Virtual fields

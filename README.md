@@ -32,9 +32,13 @@ npm install
 Create a `.env` file at the root of your project and add the following variables:
 
 PORT=5000
+
 MONGODB_URI=mongodb://localhost:27017/loginSection
+
 JWT_SECRET=yourSuperSecretJWTKey
+
 ACCESS_TOKEN_EXPIRY=15m
+
 REFRESH_TOKEN_EXPIRY=7d
 
 ---
@@ -67,8 +71,20 @@ The backend will run on `http://localhost:5000`.
 ## Authentication
 
 - Use the `accessToken` for protected routes via Bearer token
-- When expired, call `/refresh` with the `refreshToken` to get a new pair
+- When expired, call `/refresh-token` with the `refreshToken` to get a new pair
 - Refresh tokens are stored and rotated securely
+- Accessing /user
+  Send a GET request to /api/v1/user or similar protected endpoint.
+  Include the accessToken in the Authorization header.
+- If Token Expired
+  If the accessToken is expired:
+  Use the refreshToken to call the refresh endpoint .
+  This should:
+  Validate and rotate the refreshToken
+  Return a new accessToken and refreshToken
+- Retry the /user request
+  Use the new accessToken to retry the /user route.
+  It should now return the user’s details.
 
 ---
 
