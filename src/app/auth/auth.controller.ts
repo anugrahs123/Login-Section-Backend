@@ -33,7 +33,7 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
 //logout
 export const logout = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
-  const userId = req.body.userId;
+  const userId = req.userId;
   await authService.logout(userId, refreshToken);
   res.status(204).send();
 });
