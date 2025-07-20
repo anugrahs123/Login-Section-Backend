@@ -25,7 +25,12 @@ export const login = async (identifier: string, password: string) => {
 
   const accessToken = generateJwtToken(user);
   const refreshToken = generateRefreshToken(user, config.JWT_REFRESH_SECRET);
-
+  const refreshTokenDoc = new RefreshToken({
+    token: refreshToken,
+    user: user._id,
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+  });
+  await refreshTokenDoc.save();
   user.refreshToken = refreshToken;
   await user.save();
 
@@ -76,8 +81,16 @@ export const refreshAuthToken = async (refreshToken: string) => {
     };
   } catch (error) {
     console.log(error);
-    throw new ApiError(403, "Could not refresh token.");
+    throw new ApiError(403, "Could not refresh token, token may be expired!");
   }
+};
+
+export const userDetails = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user || user.is_deleted) {
+    throw new ApiError(401, "Invalid user ID.");
+  }
+  return user;
 };
 
 export const logout = async (userId: string, refreshToken: string) => {
@@ -96,49 +109,4 @@ export const logout = async (userId: string, refreshToken: string) => {
 
   user.refreshToken = null;
   await user.save();
-};
-
-export const refreshTokens = async (oldToken: string) => {
-  const storedToken = await RefreshToken.findOne({ token: oldToken });
-
-  if (!storedToken || storedToken.revoked || storedToken.expires < new Date()) {
-    throw new ApiError(403, "Invalid or expired refresh token.");
-  }
-
-  // 2. Verify old refresh token
-  let decoded: any;
-  try {
-    decoded = verifyRefreshToken(oldToken, config.JWT_REFRESH_SECRET);
-  } catch (err) {
-    throw new ApiError(403, "Invalid refresh token.");
-  }
-
-  const user = await User.findById(decoded.userId);
-  if (!user) {
-    throw new ApiError(404, "User not found.");
-  }
-
-  // 3. Invalidate old token
-  storedToken.revoked = true;
-  await storedToken.save();
-
-  // 4. Generate new tokens
-  const newAccessToken = generateJwtToken(user);
-  const newRefreshTokenString = generateRefreshToken(
-    user,
-    config.JWT_REFRESH_SECRET
-  );
-
-  const newRefreshToken = new RefreshToken({
-    token: newRefreshTokenString,
-    user: user._id,
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  });
-
-  await newRefreshToken.save();
-
-  return {
-    accessToken: newAccessToken,
-    refreshToken: newRefreshTokenString,
-  };
 };

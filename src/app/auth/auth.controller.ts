@@ -32,18 +32,11 @@ export const refresh = catchAsync(async (req: Request, res: Response) => {
 export const logout = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
   const userId = req.body.userId;
-  await authService.logout(userId,refreshToken);
+  await authService.logout(userId, refreshToken);
   res.status(204).send();
 });
-
-export const refreshToken = catchAsync(async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
-
-  if (!refreshToken) {
-    throw new ApiError(400, "Refresh token is required.");
-  }
-
-  const result = await authService.refreshTokens(refreshToken);
-
-  res.status(200).json(result);
+export const userDetails = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.userId;
+  const user = await authService.userDetails(userId);
+  res.status(200).json(user);
 });
