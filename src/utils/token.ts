@@ -8,7 +8,7 @@ export const generateJwtToken = (user: IUser): string => {
       userId: user._id,
     },
     config.JWT_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "1m" }
   );
   return token;
 };
@@ -18,7 +18,7 @@ export const generateRefreshToken = (
   JWT_SECRET: string
 ): string => {
   return jwt.sign({ userId: user._id }, JWT_SECRET + "_refresh", {
-    expiresIn: "7d",
+    expiresIn: "2m",
   });
 };
 
